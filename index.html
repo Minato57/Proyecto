@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +12,7 @@
             box-sizing: border-box;
             font-family: sans-serif;
         }
-    
+
         body {
             width: 100%;
             display: flex;
@@ -23,7 +24,7 @@
             padding: 0 10px;
             color: white;
         }
-    
+
         body::before {
             content: "";
             position: absolute;
@@ -33,7 +34,7 @@
             background: url('https://images.hdqwalls.com/download/shorekeeper-wuthering-waves-wf-2560x1440.jpg') no-repeat center center/cover;
             z-index: -1;
         }
-    
+
         .wrapper {
             width: 100%;
             max-width: 490px;
@@ -43,24 +44,24 @@
             border: 1px solid #ffffff80;
             backdrop-filter: blur(8px);
         }
-    
+
         form {
             display: flex;
             flex-direction: column;
         }
-    
+
         h2 {
             font-size: 2.5rem;
             margin-bottom: 20px;
-            color: #fcfcfc;
+            color: #f3f2f2;
         }
-    
+
         .input-field {
             position: relative;
             border-bottom: 2px solid #ccc;
             margin: 15px 0;
         }
-    
+
         .input-field label {
             position: absolute;
             color: #fff;
@@ -71,7 +72,7 @@
             pointer-events: none;
             transition: 0.15s ease;
         }
-    
+
         .input-field input {
             width: 100%;
             height: 40px;
@@ -81,14 +82,14 @@
             outline: none;
             font-size: 16px;
         }
-    
+
         .input-field input:focus~label,
         .input-field input:valid~label {
             font-size: 0.8rem;
             top: 10px;
             transform: translateY(-120%);
         }
-    
+
         .forget {
             display: flex;
             align-items: center;
@@ -96,25 +97,25 @@
             margin: 25px 0 35px 0;
             color: #e6e6e6;
         }
-    
+
         #remember {
             accent-color: #0a5edd;
         }
-    
+
         .forget label {
             display: flex;
             align-items: center;
         }
-    
+
         .forget label p {
             margin-left: 8px;
         }
-    
+
         .wrapper a {
             color: #efefef;
             text-decoration: underline;
         }
-    
+
         button {
             background: #ffffff;
             color: #000;
@@ -127,79 +128,218 @@
             border: 2px solid transparent;
             transition: 0.3s ease;
         }
-    
+
         .register {
             text-align: center;
             margin-top: 30px;
             color: #fff;
         }
-    
+
+
         @media screen and (max-width: 768px) {
             h2 {
                 font-size: 2rem;
             }
-    
+
             .input-field input {
                 font-size: 14px;
             }
-    
+
             button {
                 font-size: 14px;
                 padding: 10px 18px;
             }
         }
+
         @media screen and (max-width: 480px) {
-           .wrapper {
-               padding: 20px;
+            .wrapper {
+                padding: 20px;
             }
+
             h2 {
-               font-size: 1.8rem;
+                font-size: 1.8rem;
             }
+
             .input-field input {
                 font-size: 14px;
             }
+
             button {
                 font-size: 14px;
                 padding: 10px 18px;
             }
         }
-         @media screen and (min-width: 1024px) {
+
+        @media screen and (min-width: 1024px) {
             .wrapper {
-              width: 70%;
+                width: 70%;
             }
+
             h2 {
                 font-size: 2.5rem;
             }
+
             .input-field input {
                 font-size: 16px;
             }
         }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Solo aplica estilo cuando se ve la sección de "Olvidaste tu contraseña" */
+        #reset-section {
+            display: none;
+            /* Oculto por defecto, se activa con JavaScript */
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            margin-top: 20px;
+            color: #fff;
+        }
+
+        #reset-section.show {
+            display: flex;
+        }
+
+        #reset-section p {
+            margin: 0;
+            font-size: 16px;
+            color: #f3f3f3;
+            text-align: center;
+        }
+
+        #reset-section .register {
+            margin-top: 5px;
+            /* Reduce el espacio entre "Continuar" y "Volver al inicio de sesión" */
+        }
+
+        #verify-section {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            margin-top: 20px;
+            color: #fff;
+        }
+
+        #verify-section.show {
+            display: flex;
+        }
+
+        #verify-section p {
+            margin: 0;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        #verify-section .register {
+            margin-top: 5px;
+            /* Solo afecta a la sección de verificación */
+        }
     </style>
-    </head>
-    <body>
-        <div class="wrapper">
-            <form action="#">
-                <h2>INICIAR SESION</h2>
-                <div class="input-field">
-                    <input type="text" id="email" required>
-                    <label for="email">Correo electrónico</label>
-                </div>
-                <div class="input-field">
-                    <input type="password" required>
-                    <label>Contraseña</label>
-                </div>
-                <div class="forget">
-                    <label for="remember">
-                        <input type="checkbox" id="remember">
-                        <p> Acuérdate de mí</p>
-                    </label>
-                    <a href="#">¿Olvidaste tu contraseña?</a>
-                </div>
-                <button type="submit">Iniciar sesion </button>
-                <div class="register">
-                    <a href="#"> Crear cuenta</a>
-                </div>
-            </form>
+</head>
+
+<body>
+    <div class="wrapper">
+        <form action="#">
+            <h2>INICIAR SESION</h2>
+            <div class="input-field">
+                <input type="text" id="email" required>
+                <label for="email">Correo electrónico</label>
+            </div>
+            <div class="input-field">
+                <input type="password" required>
+                <label>Contraseña</label>
+            </div>
+            <div class="forget">
+                <label for="remember">
+                    <input type="checkbox" id="remember">
+                    <p> Acuérdate de mí</p>
+                </label>
+                <a href="#">¿Olvidaste tu contraseña?</a>
+            </div>
+            <button type="submit">Iniciar sesion </button>
+            <div class="register">
+                <a href="#"> Crear cuenta</a>
+            </div>
+        </form>
+
+        <!-- Sección de restablecer contraseña -->
+        <div class="reset-password hidden" id="reset-section">
+            <h1>Restablecer contraseña</h1>
+            <p id="reset-text">
+                Haz clic en “Continuar” para restablecer tu contraseña para
+                <strong id="user-email"></strong>
+            </p>
+            <button onclick="handleContinue()">Continuar</button>
+            <div class="register">
+                <a href="#" onclick="showLogin()">Volver al inicio de sesión</a>
+            </div>
         </div>
-    </body>
+
+        <!-- Sección de verificación -->
+        <div class="verify-section hidden" id="verify-section">
+            <h1>Busca en tu bandeja de entrada</h1>
+            <p id="verify-text">
+                Ingresa el código de verificación que acabamos de enviar a:
+                <strong id="verify-email"></strong>
+            </p>
+            <div class="input-field">
+                <input type="text" id="code" required>
+                <label for="code">Código</label>
+            </div>
+            <button onclick="verifyCode()">Continuar</button>
+            <div class="register">
+                <a href="#" onclick="resendEmail()">Reenviar correo electrónico</a>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        const loginForm = document.querySelector('form');
+        const resetSection = document.getElementById('reset-section');
+        const verifySection = document.getElementById('verify-section');
+        const emailInput = document.getElementById('email');
+        const userEmailSpan = document.getElementById('user-email');
+        const verifyEmailSpan = document.getElementById('verify-email');
+
+        function showReset() {
+            const email = emailInput.value || "[correo no ingresado]";
+            userEmailSpan.textContent = email;
+            loginForm.style.display = "none";
+            resetSection.classList.add("show");
+        }
+
+        function showLogin() {
+            loginForm.style.display = "flex";
+            resetSection.classList.remove("show");
+            verifySection.classList.remove("show");
+        }
+
+        function handleContinue() {
+            const email = emailInput.value || "[correo no ingresado]";
+            verifyEmailSpan.textContent = email;
+            resetSection.classList.remove("show");
+            verifySection.classList.add("show");
+        }
+
+        function verifyCode() {
+            alert("Código verificado correctamente (o aquí manejar el código ingresado).");
+        }
+
+        function resendEmail() {
+            alert("Correo de verificación reenviado.");
+        }
+
+        document.querySelector('.forget a').addEventListener('click', function (event) {
+            event.preventDefault();
+            showReset();
+        });
+    </script>
+
+
+</body>
+
 </html>

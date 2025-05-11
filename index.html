@@ -301,6 +301,25 @@
             outline: none;
             font-size: 16px;
         }
+
+        .edit-button {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: #ffffffb0;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        #edit-email:focus+label,
+        #edit-email:not(:placeholder-shown)+label {
+             font-size: 0.8rem;
+            top: 10px;
+            transform: translateY(-120%);
+        }
     </style>
 </head>
 
@@ -321,7 +340,8 @@
                     <input type="checkbox" id="remember">
                     <p> Acuérdate de mí</p>
                 </label>
-                <a href="#">¿Olvidaste tu contraseña?</a>
+                <a href="#" onclick="showReset()">¿Olvidaste tu contraseña?</a>
+
             </div>
             <button type="submit">Iniciar secion </button>
             <div class="register">
@@ -376,9 +396,10 @@
 
             <!-- Correo editable -->
             <div class="input-field">
-                <input type="text" id="edit-email" value="" disabled>
+                <input type="text" id="edit-email" placeholder=" " value="" disabled>
                 <label for="edit-email">Dirección de correo electrónico</label>
-                 <button type="button" onclick="editEmail()">Editar</button>
+                <button type="button" class="edit-button" onclick="editEmail()">Editar</button>
+
             </div>
 
             <!-- Contraseña -->
@@ -394,22 +415,32 @@
 
     </div>
     <script>
+        // Elementos generales
         const loginForm = document.querySelector('form');
         const resetSection = document.getElementById('reset-section');
         const verifySection = document.getElementById('verify-section');
+        const createAccountSection = document.getElementById('create-account-section');
+        const passwordSection = document.getElementById('password-section');
+
+        // Inputs del formulario de inicio de sesión
         const emailInput = document.getElementById('email');
+        const loginPasswordInput = document.getElementById('login-password');
+        const rememberCheckbox = document.getElementById('remember');
+
+        // Inputs y elementos de recuperación / verificación
         const userEmailSpan = document.getElementById('user-email');
         const verifyEmailSpan = document.getElementById('verify-email');
-        const continueButton = document.getElementById("continue-button");
-        const rememberCheckbox = document.getElementById('remember');
+        const continueButton = document.getElementById('continue-button');
+
+        // Inputs del formulario de crear cuenta
         const newEmailInput = document.getElementById('new-email');
-        const createAccountSection = document.getElementById('create-account-section');
-        const passwordInput = document.getElementById('password');
-        const editEmailButton = document.getElementById('edit-email');
-        const passwordSection = document.getElementById('password-section');
-        const passwordValue = document.getElementById('login-password').value.trim();
 
+        // Inputs de la sección de contraseña (crear cuenta)
+        const editEmailInput = document.getElementById('edit-email');
+        const createPasswordInput = document.getElementById('create-password');
 
+        // Código de verificación
+        const codeInput = document.getElementById('code');
 
         // Mostrar sección de "Crear cuenta"
         function showCreateAccount() {
@@ -435,17 +466,6 @@
             passwordSection.style.display = "block";
         }
 
-        function continueToCreateAccount() {
-            const newEmail = newEmailInput.value.trim();
-
-            if (!newEmail || !validateEmail(newEmail)) {
-                alert("Por favor, ingresa un correo electrónico válido.");
-                return;
-            }
-
-            alert("Cuenta creada con éxito para " + newEmail);
-            // Aquí podrías agregar más lógica como redirigir al usuario a otra página
-        }
 
         function editEmail() {
             editEmailInput.disabled = false;
@@ -457,10 +477,10 @@
             const eyeIcon = passwordInput.nextElementSibling;
             if (passwordInput.type === "password") {
                 passwordInput.type = "text";
-                eyeIcon.textContent = "🙈";
+                eyeIcon.textContent = "👁️";
             } else {
                 passwordInput.type = "password";
-                eyeIcon.textContent = "👁️";
+                eyeIcon.textContent = "🙈";
             }
         }
 
@@ -504,6 +524,8 @@
         // Función para guardar el correo si "Acuérdate de mí" está marcado
         function handleRememberMe() {
             const email = emailInput.value.trim();
+            const password = loginPasswordInput.value.trim();
+
             if (rememberCheckbox.checked && email && password) {
                 localStorage.setItem('rememberedEmail', email); // Guardar correo
                 localStorage.setItem('rememberedPassword', password); // Guardar contraseña
@@ -568,19 +590,13 @@
                 continueButton.disabled = true;  // Deshabilitar el botón si el correo es inválido
             }
         });
-
+        // Evento para mostrar restablecer contraseña
         document.querySelector('.forget a').addEventListener('click', function (event) {
             event.preventDefault();
             showReset();
         });
         // Agregar un "listener" para que cuando cambie la casilla "Acuérdate de mí", guardemos la preferencia
         rememberCheckbox.addEventListener('change', handleRememberMe);
-        // Evento para mostrar restablecer contraseña
-        document.querySelector('.forget a').addEventListener('click', function (event) {
-            event.preventDefault();
-            showReset();
-        });
-
     </script>
 </body>
 

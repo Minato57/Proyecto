@@ -191,7 +191,10 @@
         /* Solo aplica estilo cuando se ve la sección de "Olvidaste tu contraseña" */
         #reset-section {
             display: none;
-            /* Oculto por defecto, se activa con JavaScript */
+        }
+
+        #reset-section.show {
+            display: flex;
             flex-direction: column;
             align-items: center;
             gap: 16px;
@@ -199,9 +202,6 @@
             color: #fff;
         }
 
-        #reset-section.show {
-            display: flex;
-        }
 
         #reset-section p {
             margin: 0;
@@ -241,7 +241,7 @@
     </style>
 </head>
 
-<body>
+<body style="visibility: hidden;" onload="document.body.style.visibility='visible';">
     <div class="wrapper">
         <form action="#">
             <h2>INICIAR SESION</h2>
@@ -250,7 +250,7 @@
                 <label for="email">Correo electrónico</label>
             </div>
             <div class="input-field">
-                <input type="password" required>
+                <input type="password" id="password" required>
                 <label>Contraseña</label>
             </div>
             <div class="forget">
@@ -267,7 +267,7 @@
         </form>
 
         <!-- Sección de restablecer contraseña -->
-        <div class="reset-password hidden" id="reset-section">
+        <div class="reset-password" id="reset-section">
             <h1>Restablecer contraseña</h1>
             <p id="reset-text">
                 Haz clic en “Continuar” para restablecer tu contraseña para

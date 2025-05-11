@@ -23,6 +23,7 @@
             margin: 0;
             padding: 0 10px;
             color: white;
+            visibility: visible;
         }
 
         body::before {
@@ -135,7 +136,7 @@
             color: #fff;
         }
 
-
+        /* "para el tamaño de pantallas" */
         @media screen and (max-width: 768px) {
             h2 {
                 font-size: 2rem;
@@ -188,6 +189,8 @@
             display: none;
         }
 
+        /* "Olvidaste tu contraseña" */
+
         /* Solo aplica estilo cuando se ve la sección de "Olvidaste tu contraseña" */
         #reset-section {
             display: none;
@@ -234,14 +237,56 @@
             text-align: center;
         }
 
+        /* "segundo boton continuar" */
         #verify-section .register {
             margin-top: 5px;
             /* Solo afecta a la sección de verificación */
         }
+
+        /* Sección de Crear cuenta */
+        #create-account-section {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            margin-top: 20px;
+            color: #fff;
+        }
+
+        #create-account-section.show {
+            display: flex;
+        }
+
+        #create-account-section p {
+            font-size: 16px;
+        }
+
+        #create-account-section .input-field input {
+            width: 100%;
+            height: 40px;
+            color: #ffffff;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 16px;
+        }
+
+        #create-account-section button {
+            background: #ffffff;
+            color: #000;
+            font-weight: 600;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 16px;
+            border: 2px solid transparent;
+            transition: 0.3s ease;
+        }
     </style>
 </head>
 
-<body style="visibility: hidden;" onload="document.body.style.visibility='visible';">
+<body>
     <div class="wrapper">
         <form action="#">
             <h2>INICIAR SESION</h2>
@@ -262,9 +307,18 @@
             </div>
             <button type="submit">Iniciar sesion </button>
             <div class="register">
-                <a href="#"> Crear cuenta</a>
+                <a href="#" onclick="showCreateAccount()">Crear cuenta</a>
             </div>
         </form>
+        <!-- Sección de crear cuenta -->
+        <div id="create-account-section">
+            <h1>Crear cuenta</h1>
+            <div class="input-field">
+                <input type="email" id="new-email" placeholder="Dirección de correo electrónico" required>
+                <label for="new-email">Dirección de correo electrónico</label>
+            </div>
+            <button onclick="continueToCreateAccount()">Continuar</button>
+        </div>
 
         <!-- Sección de restablecer contraseña -->
         <div class="reset-password" id="reset-section">
@@ -283,14 +337,14 @@
         <div class="verify-section hidden" id="verify-section">
             <h1>Busca en tu bandeja de entrada</h1>
             <p id="verify-text">
-                Ingresa el código de verificación que acabamos de enviar a:
+                Ingresa el código de verificación que acabamos de enviar a
                 <strong id="verify-email"></strong>
             </p>
             <div class="input-field">
                 <input type="text" id="code" required>
                 <label for="code">Código</label>
             </div>
-            <button onclick="verifyCode()">Continuar</button>
+            <button id="continue-button" type="button" disabled>Continuar</button>
             <div class="register">
                 <a href="#" onclick="resendEmail()">Reenviar correo electrónico</a>
             </div>
@@ -304,24 +358,93 @@
         const emailInput = document.getElementById('email');
         const userEmailSpan = document.getElementById('user-email');
         const verifyEmailSpan = document.getElementById('verify-email');
+        const continueButton = document.getElementById("continue-button");
+        const rememberCheckbox = document.getElementById('remember');
+        const newEmailInput = document.getElementById('new-email');
+        const createAccountSection = document.getElementById('create-account-section');
+
+
+        // Mostrar sección de "Crear cuenta"
+        function showCreateAccount() {
+            loginForm.style.display = "none";
+            resetSection.classList.remove("show");
+            resetSection.classList.add("hidden");
+            verifySection.classList.remove("show");
+            verifySection.classList.add("hidden");
+
+            createAccountSection.classList.remove("hidden");
+            createAccountSection.classList.add("show");
+        }
+
+         // Continuar en el proceso de crear cuenta (aquí puedes agregar más lógica)
+        function continueToCreateAccount() {
+            const newEmail = newEmailInput.value.trim();
+
+            if (!newEmail || !validateEmail(newEmail)) {
+                alert("Por favor, ingresa un correo electrónico válido.");
+                return;
+            }
+
+            alert("Cuenta creada con éxito para " + newEmail);
+            // Aquí podrías agregar más lógica como redirigir al usuario a otra página
+        }
+
+
+        // Verificar si hay un correo guardado y ponerlo en el campo de email
+        document.addEventListener("DOMContentLoaded", function () {
+            const savedEmail = localStorage.getItem('rememberedEmail');
+            if (savedEmail) {
+                emailInput.value = savedEmail;
+                rememberCheckbox.checked = true;
+            }
+        });
+
+        // Función para guardar el correo si "Acuérdate de mí" está marcado
+        function handleRememberMe() {
+            const email = emailInput.value.trim();
+            if (rememberCheckbox.checked && email) {
+                localStorage.setItem('rememberedEmail', email); // Guardar correo en localStorage
+            } else {
+                localStorage.removeItem('rememberedEmail'); // Eliminar correo si no está marcado
+            }
+        }
 
         function showReset() {
-            const email = emailInput.value || "[correo no ingresado]";
+            const email = emailInput.value.trim();
+
+            if (!email || !validateEmail(email)) {
+                alert("Por favor, ingresa un correo electrónico válido.");
+                continueButton.disabled = true;
+                return;
+            }
             userEmailSpan.textContent = email;
             loginForm.style.display = "none";
+            resetSection.classList.remove("hidden");
             resetSection.classList.add("show");
+            continueButton.disabled = false;
         }
+        function validateEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
+
 
         function showLogin() {
             loginForm.style.display = "flex";
             resetSection.classList.remove("show");
+            resetSection.classList.add("hidden");
             verifySection.classList.remove("show");
+            verifySection.classList.add("hidden");
+            createAccountSection.classList.remove("show");
+            createAccountSection.classList.add("hidden");
         }
 
         function handleContinue() {
             const email = emailInput.value || "[correo no ingresado]";
             verifyEmailSpan.textContent = email;
             resetSection.classList.remove("show");
+            resetSection.classList.add("hidden");
+            verifySection.classList.remove("hidden");
             verifySection.classList.add("show");
         }
 
@@ -332,11 +455,27 @@
         function resendEmail() {
             alert("Correo de verificación reenviado.");
         }
+        emailInput.addEventListener("input", function () {
+            const email = emailInput.value.trim();
+            if (email && validateEmail(email)) {
+                continueButton.disabled = false;  // Habilitar el botón si el correo es válido
+            } else {
+                continueButton.disabled = true;  // Deshabilitar el botón si el correo es inválido
+            }
+        });
 
         document.querySelector('.forget a').addEventListener('click', function (event) {
             event.preventDefault();
             showReset();
         });
+        // Agregar un "listener" para que cuando cambie la casilla "Acuérdate de mí", guardemos la preferencia
+        rememberCheckbox.addEventListener('change', handleRememberMe);
+        // Evento para mostrar restablecer contraseña
+        document.querySelector('.forget a').addEventListener('click', function (event) {
+            event.preventDefault();
+            showReset();
+        });
+        
     </script>
 
 

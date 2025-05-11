@@ -23,7 +23,6 @@
             margin: 0;
             padding: 0 10px;
             color: white;
-            visibility: visible;
         }
 
         body::before {
@@ -292,20 +291,30 @@
             border: 2px solid transparent;
             transition: 0.1s ease;
         }
+
+        .input-field input[type="password"] {
+            width: 100%;
+            height: 40px;
+            color: #ffffff;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 16px;
+        }
     </style>
 </head>
 
 <body>
     <div class="wrapper">
         <form action="#">
-            <h2>INICIAR SESION</h2>
+            <h2>INICIAR SECION</h2>
             <div class="input-field">
                 <input type="text" id="email" required>
                 <label for="email">Correo electrónico</label>
             </div>
             <div class="input-field">
-                <input type="password" id="password" required>
-                <label>Contraseña</label>
+                <input type="password" id="login-password" required>
+                <label for="login-password">Contraseña</label>
             </div>
             <div class="forget">
                 <label for="remember">
@@ -314,7 +323,7 @@
                 </label>
                 <a href="#">¿Olvidaste tu contraseña?</a>
             </div>
-            <button type="submit">Iniciar sesion </button>
+            <button type="submit">Iniciar secion </button>
             <div class="register">
                 <a href="#" onclick="showCreateAccount()">Crear cuenta</a>
             </div>
@@ -327,7 +336,8 @@
                 <input type="email" id="new-email" required>
                 <label for="new-email">Dirección de correo electrónico</label>
             </div>
-            <button onclick="continueToCreateAccount()">Continuar</button>
+            <button onclick="continueToPasswordSection()">Continuar</button>
+
         </div>
 
         <!-- Sección de restablecer contraseña -->
@@ -339,7 +349,7 @@
             </p>
             <button onclick="handleContinue()">Continuar</button>
             <div class="register">
-                <a href="#" onclick="showLogin()">Volver al inicio de sesión</a>
+                <a href="#" onclick="showLogin()">Volver al inicio de seción</a>
             </div>
         </div>
 
@@ -360,6 +370,28 @@
             </div>
         </div>
 
+        <!-- Sección de ingresar contraseña -->
+        <div id="password-section" style="display: none;">
+            <h2>Ingresa tu contraseña</h2>
+
+            <!-- Correo editable -->
+            <div class="input-field">
+                <input type="text" id="edit-email" value="" disabled>
+                <label for="edit-email">Dirección de correo electrónico</label>
+                 <button type="button" onclick="editEmail()">Editar</button>
+            </div>
+
+            <!-- Contraseña -->
+            <div class="input-field">
+                <input type="password" id="create-password" required>
+                <label for="create-password">Contraseña</label>
+                <span class="toggle-password" onclick="togglePassword('create-password')">👁️</span>
+            </div>
+
+            <button>¿Olvidaste la contraseña?</button>
+            <button>Continuar</button>
+        </div>
+
     </div>
     <script>
         const loginForm = document.querySelector('form');
@@ -372,6 +404,11 @@
         const rememberCheckbox = document.getElementById('remember');
         const newEmailInput = document.getElementById('new-email');
         const createAccountSection = document.getElementById('create-account-section');
+        const passwordInput = document.getElementById('password');
+        const editEmailButton = document.getElementById('edit-email');
+        const passwordSection = document.getElementById('password-section');
+        const passwordValue = document.getElementById('login-password').value.trim();
+
 
 
         // Mostrar sección de "Crear cuenta"
@@ -384,6 +421,47 @@
 
             createAccountSection.classList.remove("hidden");
             createAccountSection.classList.add("show");
+            loginForm.reset();
+        }
+        // Función para continuar hacia la sección de contraseña
+        function continueToPasswordSection() {
+            const email = newEmailInput.value.trim();
+            if (!email || !validateEmail(email)) {
+                alert("Por favor, ingresa un correo electrónico válido.");
+                return;
+            }
+            document.getElementById('edit-email').value = email; // Rellenamos el correo en la sección de contraseña
+            createAccountSection.style.display = "none";
+            passwordSection.style.display = "block";
+        }
+
+        function continueToCreateAccount() {
+            const newEmail = newEmailInput.value.trim();
+
+            if (!newEmail || !validateEmail(newEmail)) {
+                alert("Por favor, ingresa un correo electrónico válido.");
+                return;
+            }
+
+            alert("Cuenta creada con éxito para " + newEmail);
+            // Aquí podrías agregar más lógica como redirigir al usuario a otra página
+        }
+
+        function editEmail() {
+            editEmailInput.disabled = false;
+        }
+
+        // Función para mostrar u ocultar la contraseña
+        function togglePassword(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const eyeIcon = passwordInput.nextElementSibling;
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eyeIcon.textContent = "🙈";
+            } else {
+                passwordInput.type = "password";
+                eyeIcon.textContent = "👁️";
+            }
         }
 
         // Continuar en el proceso de crear cuenta (aquí puedes agregar más lógica)
@@ -398,24 +476,40 @@
             alert("Cuenta creada con éxito para " + newEmail);
             // Aquí podrías agregar más lógica como redirigir al usuario a otra página
         }
+        // Función para mostrar la contraseña como "*****"
+        function displayPassword() {
+            const storedPassword = localStorage.getItem('rememberedPassword');
+            if (storedPassword) {
+                const asterisks = '*'.repeat(storedPassword.length); // Reemplaza la contraseña con asteriscos
+                passwordInput.value = asterisks; // Muestra asteriscos en el input de la contraseña
+            }
+        }
 
 
-        // Verificar si hay un correo guardado y ponerlo en el campo de email
+        // Verifica si hay datos guardados y los muestra al cargar la página
         document.addEventListener("DOMContentLoaded", function () {
             const savedEmail = localStorage.getItem('rememberedEmail');
+            const savedPassword = localStorage.getItem('rememberedPassword');
+
             if (savedEmail) {
                 emailInput.value = savedEmail;
                 rememberCheckbox.checked = true;
+            }
+
+            if (savedPassword) {
+                displayPassword(); // Muestra la contraseña como asteriscos
             }
         });
 
         // Función para guardar el correo si "Acuérdate de mí" está marcado
         function handleRememberMe() {
             const email = emailInput.value.trim();
-            if (rememberCheckbox.checked && email) {
-                localStorage.setItem('rememberedEmail', email); // Guardar correo en localStorage
+            if (rememberCheckbox.checked && email && password) {
+                localStorage.setItem('rememberedEmail', email); // Guardar correo
+                localStorage.setItem('rememberedPassword', password); // Guardar contraseña
             } else {
                 localStorage.removeItem('rememberedEmail'); // Eliminar correo si no está marcado
+                localStorage.removeItem('rememberedPassword'); // Eliminar contraseña si no está marcado
             }
         }
 
@@ -433,6 +527,7 @@
             resetSection.classList.add("show");
             continueButton.disabled = false;
         }
+
         function validateEmail(email) {
             const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return regex.test(email);
@@ -487,8 +582,6 @@
         });
 
     </script>
-
-
 </body>
 
 </html>
